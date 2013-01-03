@@ -22,7 +22,7 @@ LOGGER_CND=`which logger`
 GREP_CMD=`which grep`
 CUT_CMD=`which cut`
 #
-# TODO : Need to implement checks here weather or the above CMD path is available.
+# TODO : Need to implement checks here weather or the above COMMAND path is available.
 #
 
 $CLEAR_CMD;
@@ -39,12 +39,12 @@ $CLEAR_CMD;
 echo "
  NAME        : $0 
 
- SYNOPSIS    : This intractive script shall provide various menu on out put and let user to select the menu to execute.
+ SYNOPSIS    : This interactive script shall provide various menu on out put and let user to select the menu to execute.
   	
 
- DISCRIPTION : On Executing this script, this script will diplay list of menu and ask user to select the menu to execute.
+ DISCRIPTION : On Executing this script, this script will display list of menu and ask user to select the menu to execute.
                Below is the menu list.
-               1) CHANGE PASSWORD:	On selecting this meniu user can change his/her password.
+               1) CHANGE PASSWORD: On selecting this menu user can change his/her password.
 
                2) DISK SPACE: On selecting this menu, script will ask for path/mount where it will find disk usage.
 
@@ -63,9 +63,9 @@ echo "
 
  EXIT CODE  : On selecting exit by user exit code will be non-zero.
 
- LOGS       : Considering this script are mostly use for Admistation task so are info and error logs are log in 
+ LOGS       : Considering this script are mostly use for Administration task so are info and error logs are log in 
               local3.info and local3.err syslog priority. if this priority is not define in syslog.cfg file it will not log
-              but it will give common error on STDERR ouput.
+              but it will give common error on STDERR output.
 "
 }
 
@@ -73,7 +73,7 @@ while [ true ]
 do
 	echo ""
 	echo ""
-	echo "**********MANUE OPTIONS**********
+	echo "**********MENU OPTIONS**********
 
 	1) CHANGE PASSWORD >>>
 
