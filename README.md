@@ -1,6 +1,6 @@
  NAME        : admin_cmd_interface.sh
 
- SYNOPSIS    : This intractive script shall provide various menu on out put and let user to select the menu to execute.
+ SYNOPSIS    : This interactive script shall provide various menu on out put and let user to select the menu to execute.
   	
 
  DESCRIPTION : On Executing this script, this script will display list of menu and ask user to select the menu to execute.
