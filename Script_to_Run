@@ -1,0 +1,204 @@
+#!/bin/bash
+
+# Set the constraints here:
+#
+LOG_PRIORITY_INFO="local3.info"
+MY_PROG_NAME="$0"
+LOG_PRIORITY_ERR="local3.err"
+#
+# Populate some contants and path here
+#
+CLEAR_CMD=`which clear`
+PASS_CMD=`which passwd`
+SED_CMD=`which sed`;
+DF_CMD=`which df`
+WHO=`which whoami`
+PWD_PATH=`pwd`
+SSH_CMD=`which ssh`
+PS_CMD=`which ps`
+KILL_CMD=`which killall`
+SS_CMD=`which ss`
+LOGGER_CND=`which logger`
+GREP_CMD=`which grep`
+CUT_CMD=`which cut`
+#
+# TODO : Need to implement checks here weather or the above CMD path is available.
+#
+
+$CLEAR_CMD;
+
+
+#
+# Help info, here pod2man need to implement or here document can be implement 
+# instead if using this multiline echo in below function.
+#
+
+help ()  {
+$CLEAR_CMD;
+
+echo "
+ NAME        : $0 
+
+ SYNOPSIS    : This intractive script shall provide various menu on out put and let user to select the menu to execute.
+  	
+
+ DISCRIPTION : On Executing this script, this script will diplay list of menu and ask user to select the menu to execute.
+               Below is the menu list.
+               1) CHANGE PASSWORD:	On selecting this meniu user can change his/her password.
+
+               2) DISK SPACE: On selecting this menu, script will ask for path/mount where it will find disk usage.
+
+               3) LOGIN TO OTHER BOX: On Selecting this menu , Script will ask for you to enter user name and hostname/IP
+	
+               4) SEE ALL SERVICES RUNNING ON THE SERVER: On Selecting this menu script will list all running services. 
+
+               5) SHOW THE PORTS OPEN TO USE:On selecting this menu script will list open port list.
+              
+               6) SHOW ALL JAVA APPLICATION RUNNING:On selecting this menu script will list all java applications.
+		
+               7) KILL A APPLICATION : On selecting this option user has to provide process ID to kill
+           
+               8) EXIT FROM MENU : On Selecting this menu script will exit with status 1.
+
+
+ EXIT CODE  : On selecting exit by user exit code will be non-zero.
+
+ LOGS       : Considering this script are mostly use for Admistation task so are info and error logs are log in 
+              local3.info and local3.err syslog priority. if this priority is not define in syslog.cfg file it will not log
+              but it will give common error on STDERR ouput.
+"
+}
+
+while [ true ]
+do
+	echo ""
+	echo ""
+	echo "**********MANUE OPTIONS**********
+
+	1) CHANGE PASSWORD >>>
+
+	2) DISK SPACE >>>
+
+	3) LOGIN TO OTHER BOX >>>
+	
+	4) SEE ALL SERVICES RUNNING ON THE SERVER >>>
+
+	5) SHOW THE PORTS OPEN TO USE >>>
+
+	6) SHOW ALL JAVA APPLICATION RUNNING >>>
+
+	7) KILL A APPLICATION >>>
+
+	8) EXIT FROM MENU >>>
+
+	9) HELP >>>
+									"
+
+echo  "Please choose a option [1-9]  from above :"; 
+read OPT
+
+
+case $OPT in
+1)
+	echo "Please provide below data to change password for "
+	$PASS_CMD  
+	FLAG=$?
+	if [ "$FLAG" -eq "0" ] ; then
+		$LOGGER_CND -p $LOG_PRIORITY_INFO -t $MY_PROG_NAME "Password successfully  changed for user $WHO"
+	else
+		$LOGGER_CND -p $LOG_PRIORITY_ERR -t $MY_PROG_NAME "Password was not changed for user $WHO"
+	fi
+;;
+
+
+2)
+	
+	echo "Please provide the path"
+	read PATH
+	if [ -d $PATH ]; then
+		echo "Checking disk space used for path mount "
+		 $DF_CMD -h $PATH  
+		$LOGGER_CND -p $LOG_PRIORITY_INFO -t $MY_PROG_NAME "Provided the Disk space detail successfully"
+	else
+		echo "Path is wrong:GOODLUCK"
+		$LOGGER_CND -p $LOG_PRIORITY_ERR -t $MY_PROG_NAME "Provided path by the user is wrong"
+	fi
+;; 
+3)
+	echo "Please provide Hostname/IP of the server"
+	read HOST
+	echo "Please provide uname for login"
+	read UNAME
+	$SSH_CMD $UNAME@$HOST
+	FLAG=$?
+    if [ "$FLAG" -eq "0" ]; then
+    	$LOGGER_CND -p $LOG_PRIORITY_INFO -t $MY_PROG_NAME "successfully logged in to the provided hostname useing provided user id"
+    else
+	    $LOGGER_CND -p $LOG_PRIORITY_ERR -t $MY_PROG_NAME "Hostname/UserID provided by user is wrong "
+    fi
+;;
+	
+4)
+	echo "Below is the processes running on the server"
+	$PS_CMD -aux 
+	FLAG=$?
+    	if [  "${FLAG}" -eq "0"  ]; then
+	    $LOGGER_CND -p $LOG_PRIORITY_INFO -t $MY_PROG_NAME "Provided all running process on the server"
+	else
+	    $LOGGER_CND -p $LOG_PRIORITY_ERR -t $MY_PROG_NAME "Please check the command or path of the command"
+    	fi
+
+;;
+
+5)
+	TEMP=`$SS_CMD -l|$GREP_CMD -v "^Recv"|$CUT_CMD -d":" -f2 |$SED_CMD 's/[ ]*\*//'|$GREP_CMD "^[0-9]"`;
+	FLAG=$?
+	if [ -z $TEMP ]; then
+	   echo "There is no Port found open on this machine........";
+	else
+	   echo "Below are the open ports on the server"
+	fi
+    	if [ "$FLAG" -eq "0" ] ; then
+	    $LOGGER_CND -p $LOG_PRIORITY_INFO -t $MY_PROG_NAME "Provided all open ports on the server"
+    	else
+	    $LOGGER_CND -p $LOG_PRIORITY_ERR -t $MY_PROG_NAME "Please check the command or path of the command"
+    	fi
+;;
+
+6)
+	echo "Below are the JAVA processes running on the server"
+	$PS_CMD aux|$GREP_CMD  java 
+	FLAG=$?
+    	if [ "$FLAG" -eq "0" ] ; then
+   		 $LOGGER_CND -p $LOG_PRIORITY_INFO -t $MY_PROG_NAME "Provided all JAVA applications running on the server"
+    	else
+    		$LOGGER_CND -p $LOG_PRIORITY_ERR -t $MY_PROG_NAME "Please check the command or path of the command"
+    	fi
+;;
+
+7)
+	echo "Please provide application to kill"
+	read PROC_TOKILL
+	$KILL_CMD $PROC_TOKILL 
+	FLAG=$?
+	if [ "$FLAG" -eq "0" ] ; then 
+    		$LOGGER_CND -p $LOG_PRIORITY_INFO -t $MY_PROG_NAME "Killed the application and child process also"
+    	else
+	    $LOGGER_CND -p $LOG_PRIORITY_ERR -t $MY_PROG_NAME "Please check the command or path of the command"
+    	fi
+;;
+
+8)
+	exit 1;
+
+;;
+
+*)
+    help;
+	exit 1;
+
+;;  
+
+
+esac
+done
