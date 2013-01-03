@@ -3,7 +3,7 @@
  SYNOPSIS    : This intractive script shall provide various menu on out put and let user to select the menu to execute.
   	
 
- DISCRIPTION : On Executing this script, this script will diplay list of menu and ask user to select the menu to execute.
+ DESCRIPTION : On Executing this script, this script will display list of menu and ask user to select the menu to execute.
                Below is the menu list.
                
                1) CHANGE PASSWORD: On selecting this menu user can change his/her password.
@@ -25,6 +25,6 @@
 
  EXIT CODE  : On selecting exit by user exit code will be non-zero.
 
- LOGS       : Considering this script are mostly use for Admistation task so are info and error logs are log in 
+ LOGS       : Considering this script are mostly use for Administration task so are info and error logs are log in 
               local3.info and local3.err syslog priority. if this priority is not define in syslog.cfg file it will not log
-              but it will give common error on STDERR ouput.
+              but it will give common error on STDERR output.
