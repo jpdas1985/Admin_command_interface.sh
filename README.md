@@ -5,7 +5,8 @@
 
  DISCRIPTION : On Executing this script, this script will diplay list of menu and ask user to select the menu to execute.
                Below is the menu list.
-               1) CHANGE PASSWORD:	On selecting this meniu user can change his/her password.
+               
+               1) CHANGE PASSWORD: On selecting this menu user can change his/her password.
 
                2) DISK SPACE: On selecting this menu, script will ask for path/mount where it will find disk usage.
 
